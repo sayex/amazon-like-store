@@ -11,7 +11,7 @@ var connection = mysql.createConnection({
     user: "root",
 
     // Your password
-    password: "Sayer1982!",
+    password: "newpassword",
     database: "bamazon"
 });
 
@@ -25,7 +25,7 @@ function readProducts(callback) {
     connection.query("SELECT * FROM products", function (err, res) {
         if (err) throw err;
         var resArr = {};
-        console.log(res)
+        // console.log(res)
         // for (var i = 0; i < res.length; i++) {
         //     resArr.push(res[i].product_name);
         // }
@@ -39,7 +39,7 @@ function customerSelection() {
         var resArr =[];
          
         for (var i = 0; i < res.length; i++) {
-            resArr.push(res[i].product_name);
+            resArr.push(res[i].idproducts+" "+res[i].product_name);
 
         }
         inquirer
@@ -58,9 +58,19 @@ function customerSelection() {
             ])
             .then(answers => {
                 // deleteSongFromPlaylist(answers);
-
-                console.log(answers)
-                customerSelection()
+                var productNameId = answers.product_name.split(" ")
+                var productNameIdIndex = productNameId[0]-1
+                var userQty = parseInt(answers.purchaseQty)
+                var databaseQty = res[productNameIdIndex].stock_quantity
+                // console.log(productNameId[0])
+                // console.log(res[productNameIdIndex].stock_quantity)
+                // console.log(userQty)
+               if (userQty > databaseQty){
+                   console.log("Not enough in inventory")
+               } else if (userQty < databaseQty){
+                   console.log("Enough is in Inventory for purchase")
+               }
+               connection.end()
             });
     });
 };
