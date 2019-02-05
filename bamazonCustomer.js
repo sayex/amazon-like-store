@@ -24,8 +24,8 @@ function readProducts(callback) {
     });
 }
 
-function updatepurchase(id, newQty){
-    
+function updatepurchase(id, newQty) {
+
     connection.query("UPDATE products SET stock_quantity =? WHERE idproducts =?", [newQty, id], function (err, res) {
         if (err) throw err;
 
@@ -35,10 +35,10 @@ function updatepurchase(id, newQty){
 
 function customerSelection() {
     readProducts(function (res) {
-        var resArr =[];
-         
+        var resArr = [];
+
         for (var i = 0; i < res.length; i++) {
-            resArr.push(res[i].idproducts+"  " + res[i].product_name + " Dept: " +res[i].department_name + " Product Price: " + res[i].price + " Stock Qty: " + res[i].stock_quantity );
+            resArr.push(res[i].idproducts + "  " + res[i].product_name + " Dept: " + res[i].department_name + " Product Price: " + res[i].price + " Stock Qty: " + res[i].stock_quantity);
 
         }
         inquirer
@@ -58,22 +58,28 @@ function customerSelection() {
             .then(answers => {
                 var productNameId = answers.product_name.split(" ")
                 productNameId = productNameId[0]
-                var productNameIdIndex = productNameId[0]-1
+                var productNameIdIndex = productNameId[0] - 1
                 var userQty = parseInt(answers.purchaseQty)
                 var databaseQty = res[productNameIdIndex].stock_quantity
                 var databasePrice = res[productNameIdIndex].price
-               if (userQty > databaseQty){
-                   console.log("Not enough in inventory");
-               } else if (userQty < databaseQty){
+                if (userQty > databaseQty) {
+                    console.log("-----------------------");
+                    console.log();
+                    console.log("Not enough in inventory");
+                    console.log("-----------------------");
+                    console.log();
+                } else if (userQty < databaseQty) {
                     var totalPrucahse = userQty * databasePrice;
                     var newQty = databaseQty - userQty;
-                   updatepurchase(productNameId, userQty, databaseQty, newQty)
-                   console.log("Enough is in Inventory for purchase." + "|| Purchase Price: $" + totalPrucahse);
-                   console.log("-----------------------");
-                   console.log();
-                   
-               }
-               customerSelection()
+                    updatepurchase(productNameId, userQty, databaseQty, newQty)
+                    console.log("-----------------------");
+                    console.log();
+                    console.log("Enough is in Inventory for purchase." + "|| Purchase Price: $" + totalPrucahse);
+                    console.log("-----------------------");
+                    console.log();
+
+                }
+                customerSelection()
             });
     });
 };
