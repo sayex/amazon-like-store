@@ -15,23 +15,22 @@ var connection = mysql.createConnection({
     database: "bamazon"
 });
 
-//   connection.connect(function (err) {
-//     if (err) throw err;
-//     console.log("connected as id " + connection.threadId + "\n");
-//     connection.end();
-//   })
 
 function readProducts(callback) {
-    connection.query("SELECT * FROM products", function (err, res) {
+    connection.query("SELECT products.idproducts, products.product_name, products.price, products.stock_quantity, departments.department_name FROM products INNER JOIN departments ON products.department_id = departments.iddepartments", function (err, res) {
         if (err) throw err;
-        var resArr = {};
-        // console.log(res)
-        // for (var i = 0; i < res.length; i++) {
-        //     resArr.push(res[i].product_name);
-        // }
         callback(res);
 
     });
+}
+
+function updatepurchase(id, newQty){
+    
+    connection.query("UPDATE products SET stock_quantity =? WHERE idproducts =?", [newQty, id], function (err, res) {
+        if (err) throw err;
+
+    });
+
 }
 
 function customerSelection() {
@@ -39,7 +38,7 @@ function customerSelection() {
         var resArr =[];
          
         for (var i = 0; i < res.length; i++) {
-            resArr.push(res[i].idproducts+" "+res[i].product_name);
+            resArr.push(res[i].idproducts+"  " + res[i].product_name + " Dept: " +res[i].department_name + " Product Price: " + res[i].price + " Stock Qty: " + res[i].stock_quantity );
 
         }
         inquirer
@@ -57,20 +56,24 @@ function customerSelection() {
                 },
             ])
             .then(answers => {
-                // deleteSongFromPlaylist(answers);
                 var productNameId = answers.product_name.split(" ")
+                productNameId = productNameId[0]
                 var productNameIdIndex = productNameId[0]-1
                 var userQty = parseInt(answers.purchaseQty)
                 var databaseQty = res[productNameIdIndex].stock_quantity
-                // console.log(productNameId[0])
-                // console.log(res[productNameIdIndex].stock_quantity)
-                // console.log(userQty)
+                var databasePrice = res[productNameIdIndex].price
                if (userQty > databaseQty){
-                   console.log("Not enough in inventory")
+                   console.log("Not enough in inventory");
                } else if (userQty < databaseQty){
-                   console.log("Enough is in Inventory for purchase")
+                    var totalPrucahse = userQty * databasePrice;
+                    var newQty = databaseQty - userQty;
+                   updatepurchase(productNameId, userQty, databaseQty, newQty)
+                   console.log("Enough is in Inventory for purchase." + "|| Purchase Price: $" + totalPrucahse);
+                   console.log("-----------------------");
+                   console.log();
+                   
                }
-               connection.end()
+               customerSelection()
             });
     });
 };
