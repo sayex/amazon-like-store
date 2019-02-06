@@ -38,7 +38,7 @@ function customerSelection() {
         var resArr = [];
 
         for (var i = 0; i < res.length; i++) {
-            resArr.push(res[i].idproducts + "  " + res[i].product_name + " Dept: " + res[i].department_name + " Product Price: " + res[i].price + " Stock Qty: " + res[i].stock_quantity);
+            resArr.push(res[i].idproducts + "  " + res[i].product_name + " || Dept: " + res[i].department_name + " || Product Price: " + res[i].price + " || Stock Qty: " + res[i].stock_quantity);
 
         }
         inquirer
@@ -74,7 +74,7 @@ function customerSelection() {
                     updatepurchase(productNameId, userQty, databaseQty, newQty)
                     console.log("-----------------------");
                     console.log();
-                    console.log("Enough is in Inventory for purchase." + "|| Purchase Price: $" + totalPrucahse);
+                    console.log("Enough is in Inventory for purchase." + " || Purchase Price: $" + totalPrucahse);
                     console.log("-----------------------");
                     console.log();
 
