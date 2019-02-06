@@ -17,14 +17,14 @@ var connection = mysql.createConnection({
 
 
 function readProducts(callback) {
-    connection.query("SELECT products.idproducts, products.product_name, products.price, products.stock_quantity, departments.department_name FROM products INNER JOIN departments ON products.department_id = departments.iddepartments", function (err, res) {
+    connection.query("SELECT * from product_view", function (err, res) {
         if (err) throw err;
         callback(res);
 
     });
 }
 
-function updatepurchase(id, newQty) {
+function updatepurchase(newQty, id) {
 
     connection.query("UPDATE products SET stock_quantity =? WHERE idproducts =?", [newQty, id], function (err, res) {
         if (err) throw err;
@@ -71,7 +71,7 @@ function customerSelection() {
                 } else if (userQty < databaseQty) {
                     var totalPrucahse = userQty * databasePrice;
                     var newQty = databaseQty - userQty;
-                    updatepurchase(productNameId, userQty, databaseQty, newQty)
+                    updatepurchase(newQty, productNameId)
                     console.log("-----------------------");
                     console.log();
                     console.log("Enough is in Inventory for purchase." + " || Purchase Price: $" + totalPrucahse);
