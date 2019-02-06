@@ -20,7 +20,7 @@ var connection = mysql.createConnection({
 
 //function to get product info. I used a view on the SQL server instead of coding a join statment here.
 function readProducts(callback) {
-  connection.query("SELECT * from product_view", function(err, res) {
+  connection.query("SELECT * from product_view", function (err, res) {
     if (err) throw err;
     callback(res);
   });
@@ -28,7 +28,7 @@ function readProducts(callback) {
 
 // function to update the products table with what they selected and how many to purchase
 function updatepurchase(newQty, id) {
-  connection.query("UPDATE products SET stock_quantity =? WHERE idproducts =?", [newQty, id], function(err, res) {
+  connection.query("UPDATE products SET stock_quantity =? WHERE idproducts =?", [newQty, id], function (err, res) {
     if (err) throw err;
   });
 }
@@ -36,25 +36,24 @@ function updatepurchase(newQty, id) {
 // function to have the inquierer packadge display all the products and give the user a way to purahse them.
 function customerSelection() {
   //callback to populate the list in the CLI and push it to an array as the inquirer list needs.
-  readProducts(function(res) {
+  readProducts(function (res) {
     var resArr = [];
 
     for (var i = 0; i < res.length; i++) {
       resArr.push(
         res[i].idproducts +
-          "  " +
-          res[i].product_name +
-          " || Dept: " +
-          res[i].department_name +
-          " || Product Price: " +
-          res[i].price +
-          " || Stock Qty: " +
-          res[i].stock_quantity
+        "  " +
+        res[i].product_name +
+        " || Dept: " +
+        res[i].department_name +
+        " || Product Price: " +
+        res[i].price +
+        " || Stock Qty: " +
+        res[i].stock_quantity
       );
     }
     inquirer
-      .prompt([
-        {
+      .prompt([{
           type: "list",
           name: "product_name",
           message: "What would you like to buy?",
